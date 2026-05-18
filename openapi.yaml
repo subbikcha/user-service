@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  title: User Service API
+  description: User Service API for managing user information including profiles, tiers, and reward points
+  version: 1.0.0
+  contact:
+    name: Ripple Support
+  license:
+    name: Apache 2.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      description: Retrieves a user's information by their unique user ID
+      operationId: getUser
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique user ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    User:
+      type: object
+      description: User entity containing user profile and reward information
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the user
+          example: "user123"
+        userName:
+          type: string
+          description: The user's display name
+          example: "john_doe"
+        tier:
+          type: string
+          description: User's membership tier level
+          example: "gold"
+          enum:
+            - bronze
+            - silver
+            - gold
+            - platinum
+        rewardPoints:
+          type: integer
+          description: Current accumulated reward points
+          example: 1500
+      required:
+        - userId
+        - userName
+
+    ErrorResponse:
+      type: object
+      description: Standard error response
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Time when the error occurred
+        status:
+          type: integer
+          description: HTTP status code
+          example: 404
+        error:
+          type: string
+          description: Error type
+          example: "Not Found"
+        message:
+          type: string
+          description: Detailed error message
+          example: "User not found"
+        path:
+          type: string
+          description: API endpoint path
+          example: "/users/invalid-id"
+      required:
+        - status
+        - message
+
+tags:
+  - name: Users
+    description: User management endpoints
