@@ -1,0 +1,32 @@
+name: Ripple Trigger
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+jobs:
+
+  notify-ripple:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Notify Ripple Orchestrator
+
+        run: |
+
+          curl -X POST http://localhost:8081/diff \
+          -H "Content-Type: application/json" \
+          -d '{
+            "repo": "${{ github.repository }}",
+            "prNumber": "${{ github.event.pull_request.number }}",
+            "branch": "${{ github.head_ref }}",
+            "baseBranch": "${{ github.base_ref }}",
+            "headCommit": "${{ github.event.pull_request.head.sha }}"
+          }'
