@@ -5,7 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
-@Table(name = "users")
+@Table(name = "users1234")
 @Setter
 @NoArgsConstructor
 public class User {
