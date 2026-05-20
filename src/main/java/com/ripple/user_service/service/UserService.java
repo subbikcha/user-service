@@ -14,7 +14,7 @@ public class UserService {
         this.repository = repository;
     }
 
-    public User getUser(String id) {
-        return repository.findById(id).orElse(null);
+    public User getUser(Integer id) {
+        return repository.findById(id.toString()).orElse(null);
     }
 }
