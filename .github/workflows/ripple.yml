@@ -21,7 +21,7 @@ jobs:
 
         run: |
 
-          curl -X POST http://localhost:8081/diff \
+          curl -X POST http://localhost:8081/api/analyze \
           -H "Content-Type: application/json" \
           -d '{
             "repo": "${{ github.repository }}",
