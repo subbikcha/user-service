@@ -2,12 +2,17 @@ package com.ripple.user_service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "users1234")
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "users1234")
 public class User {
 
     @Id
@@ -18,4 +23,19 @@ public class User {
     private String tier;
 
     private Integer rewardPoints;
+
+    private String email;
+
+    private String phoneNumber;
+
+    private String address;
+
+    @Builder.Default
+    private Double walletBalance = 0.0;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Builder.Default
+    private Boolean isActive = true;
 }
