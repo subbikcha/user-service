@@ -9,12 +9,75 @@ info:
     name: Apache 2.0
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8081
     description: Local development server
-  - url: https://api.example.com
-    description: Production server
 
 paths:
+  /users:
+    get:
+      summary: List all active users
+      operationId: listUsers
+      tags:
+        - Users
+      responses:
+        '200':
+          description: List of all active users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create a new user
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/tier/{tier}:
+    get:
+      summary: Get users by tier
+      operationId: getUsersByTier
+      tags:
+        - Users
+      parameters:
+        - name: tier
+          in: path
+          required: true
+          description: The membership tier to filter by
+          schema:
+            type: string
+            enum:
+              - bronze
+              - silver
+              - gold
+              - platinum
+              - premium
+              - standard
+              - new
+      responses:
+        '200':
+          description: List of users with the specified tier
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
   /users/{id}:
     get:
       summary: Get user by ID
@@ -48,6 +111,118 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update a user's profile
+      operationId: updateUser
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique user ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a user (soft delete)
+      operationId: deleteUser
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique user ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+
+  /users/{id}/rewards:
+    post:
+      summary: Add reward points to a user
+      operationId: addRewards
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique user ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddRewardsRequest'
+      responses:
+        '200':
+          description: Reward points added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users/{id}/wallet/topup:
+    post:
+      summary: Top up a user's wallet balance
+      operationId: walletTopUp
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique user ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletTopUpRequest'
+      responses:
+        '200':
+          description: Wallet topped up successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -66,19 +241,143 @@ components:
         tier:
           type: string
           description: User's membership tier level
-          example: "gold"
           enum:
             - bronze
             - silver
             - gold
             - platinum
+            - premium
+            - standard
+            - new
         rewardPoints:
           type: integer
           description: Current accumulated reward points
-          example: 1500
+        email:
+          type: string
+          format: email
+          description: User's email address
+        phoneNumber:
+          type: string
+          description: User's contact phone number
+        address:
+          type: string
+          description: User's delivery address
+        walletBalance:
+          type: number
+          format: double
+          description: User's current wallet balance in rupees
+          default: 0.0
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user account was created
+        isActive:
+          type: boolean
+          description: Whether the user account is active
+          default: true
       required:
         - userId
         - userName
+
+    CreateUserRequest:
+      type: object
+      description: Request body to create a new user
+      properties:
+        userName:
+          type: string
+          description: The user's display name
+        email:
+          type: string
+          format: email
+          description: User's email address
+        phoneNumber:
+          type: string
+          description: User's contact phone number
+        address:
+          type: string
+          description: User's delivery address
+        tier:
+          type: string
+          description: Membership tier (defaults to "new")
+          enum:
+            - bronze
+            - silver
+            - gold
+            - platinum
+            - premium
+            - standard
+            - new
+          default: new
+        rewardPoints:
+          type: integer
+          description: Initial reward points (defaults to 0)
+          default: 0
+        walletBalance:
+          type: number
+          format: double
+          description: Initial wallet balance (defaults to 0.0)
+          default: 0.0
+      required:
+        - userName
+        - email
+        - phoneNumber
+        - address
+
+    UpdateUserRequest:
+      type: object
+      description: Request body to update a user's profile
+      properties:
+        userName:
+          type: string
+          description: The user's display name
+        email:
+          type: string
+          format: email
+          description: User's email address
+        phoneNumber:
+          type: string
+          description: User's contact phone number
+        address:
+          type: string
+          description: User's delivery address
+        tier:
+          type: string
+          description: Membership tier level
+          enum:
+            - bronze
+            - silver
+            - gold
+            - platinum
+            - premium
+            - standard
+            - new
+      required:
+        - userName
+        - email
+        - phoneNumber
+        - address
+        - tier
+
+    AddRewardsRequest:
+      type: object
+      description: Request body to add reward points to a user
+      properties:
+        points:
+          type: integer
+          description: Number of reward points to add
+      required:
+        - points
+
+    WalletTopUpRequest:
+      type: object
+      description: Request body to top up a user's wallet balance
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Amount in rupees to add to the wallet
+      required:
+        - amount
 
     ErrorResponse:
       type: object
