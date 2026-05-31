@@ -262,10 +262,10 @@ components:
         address:
           type: string
           description: User's delivery address
-        walletBalance:
+        walletCredit:
           type: number
           format: double
-          description: User's current wallet balance in rupees
+          description: User's current wallet credit in rupees
           default: 0.0
         createdAt:
           type: string
@@ -274,7 +274,7 @@ components:
         isActive:
           type: boolean
           description: Whether the user account is active
-          default: true
+          nullable: true
       required:
         - userId
         - userName

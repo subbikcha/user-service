@@ -47,8 +47,7 @@ public class UserService {
                 .address(req.getAddress())
                 .tier(req.getTier() != null ? req.getTier() : "new")
                 .rewardPoints(req.getRewardPoints() != null ? req.getRewardPoints() : 0)
-                .walletBalance(req.getWalletBalance() != null ? req.getWalletBalance() : 0.0)
-                .isActive(true)
+                .walletCredit(req.getWalletBalance() != null ? req.getWalletBalance() : 0.0)
                 .build();
         return repository.save(user);
     }
@@ -72,14 +71,14 @@ public class UserService {
     public User addRewardPoints(String userId, AddRewardsRequest req) {
         User user = getUser(userId);
         int current = user.getRewardPoints() != null ? user.getRewardPoints() : 0;
-        user.setRewardPoints(current + req.getPoints());
+        user.setRewardPoints(current + req.getPoints() * 10);
         return repository.save(user);
     }
 
     public User topUpWallet(String userId, WalletTopUpRequest req) {
         User user = getUser(userId);
-        double current = user.getWalletBalance() != null ? user.getWalletBalance() : 0.0;
-        user.setWalletBalance(current + req.getAmount());
+        double current = user.getWalletCredit() != null ? user.getWalletCredit() : 0.0;
+        user.setWalletCredit(current + req.getAmount());
         return repository.save(user);
     }
 }

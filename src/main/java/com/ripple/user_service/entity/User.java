@@ -30,11 +30,10 @@ public class User {
     private String address;
 
     @Builder.Default
-    private Double walletBalance = 0.0;
+    private Double walletCredit = 0.0;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Builder.Default
-    private Boolean isActive = true;
+    private Boolean isActive;
 }
