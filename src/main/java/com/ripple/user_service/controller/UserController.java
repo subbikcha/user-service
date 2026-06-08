@@ -5,12 +5,15 @@ import com.ripple.user_service.dto.CreateUserRequest;
 import com.ripple.user_service.dto.UpdateUserRequest;
 import com.ripple.user_service.dto.WalletTopUpRequest;
 import com.ripple.user_service.entity.User;
+import com.ripple.user_service.repository.UserRepository;
 import com.ripple.user_service.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -18,19 +21,25 @@ import java.util.List;
 public class UserController {
 
     private final UserService service;
+    private final UserRepository repository;
 
-    public UserController(UserService service) {
+    public UserController(UserService service, UserRepository repository) {
         this.service = service;
+        this.repository = repository;
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(service.getAllUsers());
+    public ResponseEntity<Map<String, Object>> getAllUsers() {
+        List<User> users = service.getAllUsers();
+        Map<String, Object> response = new HashMap<>();
+        response.put("users", users);
+        response.put("count", users.size());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable String id) {
-        return ResponseEntity.ok(service.getUser(id));
+        return ResponseEntity.ok(repository.findById(id).orElse(null));
     }
 
     @GetMapping("/tier/{tier}")
@@ -56,7 +65,10 @@ public class UserController {
 
     @PostMapping("/{id}/rewards")
     public ResponseEntity<User> addRewards(@PathVariable String id, @RequestBody AddRewardsRequest req) {
-        return ResponseEntity.ok(service.addRewardPoints(id, req));
+        User user = repository.findById(id).orElseThrow();
+        int current = user.getRewardPoints() != null ? user.getRewardPoints() : 0;
+        user.setRewardPoints(current + req.getPoints());
+        return ResponseEntity.ok(repository.save(user));
     }
 
     @PostMapping("/{id}/wallet/topup")

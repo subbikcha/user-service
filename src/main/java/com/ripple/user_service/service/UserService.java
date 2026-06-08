@@ -34,7 +34,7 @@ public class UserService {
 
     public List<User> getUsersByTier(String tier) {
         return repository.findAll().stream()
-                .filter(u -> Boolean.TRUE.equals(u.getIsActive()) && tier.equalsIgnoreCase(u.getTier()))
+                .filter(u -> Boolean.TRUE.equals(u.getIsActive()) && tier.equals(u.getTier()))
                 .toList();
     }
 
@@ -64,12 +64,13 @@ public class UserService {
     }
 
     public void deleteUser(String userId) {
-        User user = getUser(userId);
-        user.setIsActive(false);
-        repository.save(user);
+        repository.deleteById(userId);
     }
 
     public User addRewardPoints(String userId, AddRewardsRequest req) {
+        if (req.getPoints() == null) {
+            throw new IllegalArgumentException("points must not be null");
+        }
         User user = getUser(userId);
         int current = user.getRewardPoints() != null ? user.getRewardPoints() : 0;
         user.setRewardPoints(current + req.getPoints());
