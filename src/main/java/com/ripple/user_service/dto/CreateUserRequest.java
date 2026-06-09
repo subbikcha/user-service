@@ -12,6 +12,6 @@ public class CreateUserRequest {
     private String phoneNumber;
     private String address;
     private String tier;
-    private Integer rewardPoints;
+    private Integer loyaltyPoints;
     private Double walletBalance;
 }

@@ -249,9 +249,9 @@ components:
             - premium
             - standard
             - new
-        rewardPoints:
+        loyaltyPoints:
           type: integer
-          description: Current accumulated reward points
+          description: Current accumulated loyalty points
         email:
           type: string
           format: email
@@ -309,9 +309,9 @@ components:
             - standard
             - new
           default: new
-        rewardPoints:
+        loyaltyPoints:
           type: integer
-          description: Initial reward points (defaults to 0)
+          description: Initial loyalty points (defaults to 0)
           default: 0
         walletBalance:
           type: number

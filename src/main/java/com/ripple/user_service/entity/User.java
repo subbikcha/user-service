@@ -21,7 +21,7 @@ public class User {
 
     private String tier;
 
-    private Integer rewardPoints;
+    private Integer loyaltyPoints;
 
     private String email;
 
