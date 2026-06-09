@@ -265,8 +265,9 @@ components:
         walletBalance:
           type: number
           format: double
-          description: User's current wallet balance in rupees
+          description: "Account wallet balance in paise (1 rupee = 100 paise)"
           default: 0.0
+          example: 50000.0
         createdAt:
           type: string
           format: date-time

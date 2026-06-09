@@ -37,4 +37,8 @@ public class User {
 
     @Builder.Default
     private Boolean isActive = true;
+
+    public Double getWalletBalance() {
+        return this.walletBalance == null ? null : this.walletBalance * 100;
+    }
 }
