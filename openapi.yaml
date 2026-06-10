@@ -249,9 +249,9 @@ components:
             - premium
             - standard
             - new
-        rewardPoints:
+        loyaltyPoints:
           type: integer
-          description: Current accumulated reward points
+          description: Current accumulated loyalty points
         email:
           type: string
           format: email
@@ -265,8 +265,9 @@ components:
         walletBalance:
           type: number
           format: double
-          description: User's current wallet balance in rupees
+          description: "Account wallet balance in paise (1 rupee = 100 paise)"
           default: 0.0
+          example: 50000.0
         createdAt:
           type: string
           format: date-time
@@ -308,9 +309,9 @@ components:
             - standard
             - new
           default: new
-        rewardPoints:
+        loyaltyPoints:
           type: integer
-          description: Initial reward points (defaults to 0)
+          description: Initial loyalty points (defaults to 0)
           default: 0
         walletBalance:
           type: number

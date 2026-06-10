@@ -21,7 +21,7 @@ public class User {
 
     private String tier;
 
-    private Integer rewardPoints;
+    private Integer loyaltyPoints;
 
     private String email;
 
@@ -37,4 +37,8 @@ public class User {
 
     @Builder.Default
     private Boolean isActive = true;
+
+    public Double getWalletBalance() {
+        return this.walletBalance == null ? null : this.walletBalance * 100;
+    }
 }

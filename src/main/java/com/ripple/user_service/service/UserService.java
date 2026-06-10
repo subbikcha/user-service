@@ -46,7 +46,7 @@ public class UserService {
                 .phoneNumber(req.getPhoneNumber())
                 .address(req.getAddress())
                 .tier(req.getTier() != null ? req.getTier() : "new")
-                .rewardPoints(req.getRewardPoints() != null ? req.getRewardPoints() : 0)
+                .loyaltyPoints(req.getLoyaltyPoints() != null ? req.getLoyaltyPoints() : 0)
                 .walletBalance(req.getWalletBalance() != null ? req.getWalletBalance() : 0.0)
                 .isActive(true)
                 .build();
@@ -71,8 +71,8 @@ public class UserService {
 
     public User addRewardPoints(String userId, AddRewardsRequest req) {
         User user = getUser(userId);
-        int current = user.getRewardPoints() != null ? user.getRewardPoints() : 0;
-        user.setRewardPoints(current + req.getPoints());
+        int current = user.getLoyaltyPoints() != null ? user.getLoyaltyPoints() : 0;
+        user.setLoyaltyPoints(current + req.getPoints());
         return repository.save(user);
     }
 

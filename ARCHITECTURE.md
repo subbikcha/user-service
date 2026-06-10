@@ -79,3 +79,4 @@ Package hierarchy: `controller` → `service` → `repository` → `entity`
 - Lombok annotations (`@Data`, `@Builder`, `@AllArgsConstructor`, `@NoArgsConstructor`) are used on the `User` entity — do not remove them or replace with manual boilerplate.
 - `spring.jpa.show-sql=true` is intentional for development — do not disable it in the dev profile; do not enable it in production profiles.
 - Seed data lives exclusively in `DataLoader` — do not add hardcoded users elsewhere.
+- `user-service` must not make outbound HTTP calls to any other microservice (e.g. `order-service`, `recommendation-service`). This service is a leaf node in the dependency graph — it has no runtime dependencies on other services. Any such HTTP call creates a circular dependency and is forbidden.
